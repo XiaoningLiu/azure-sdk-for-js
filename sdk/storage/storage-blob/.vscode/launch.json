@@ -1,0 +1,32 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Current Mocha",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "cwd": "${workspaceFolder}/",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "args": [
+        "-u",
+        "tdd",
+        "--timeout",
+        "999999",
+        "--colors",
+        "${relativeFile}"
+      ],
+      "env": {
+        "ACCOUNT_NAME2": "jsv10",
+        "ACCOUNT_KEY2": "Q/FyS8f1/WcpmCj7D9mHuQCYZlWWybWgX3qFwwPi0aZQksNmjY0uEzm9kjvbkTcRmhXzpyqB5jlS5Xy9qcNywg==",
+        "ACCOUNT_NAME": "08dxscnapsn4prde16c",
+        "ACCOUNT_KEY": "D+4IIzPiVAu4fe1MLXn67axNhRg1niT87hPU15uDw42f+azF4UJxAg+xU2fXpn4nwnfJBk+Et2Du+DNcRyAtiw==",
+        "TS_NODE_COMPILER_OPTIONS": "{\"module\": \"commonjs\"}"
+      },
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+  ]
+}
