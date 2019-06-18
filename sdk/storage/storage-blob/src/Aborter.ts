@@ -42,6 +42,9 @@ import { AbortSignalLike, isNode } from "@azure/ms-rest-js";
  */
 
 export class Aborter implements AbortSignalLike {
+  dispatchEvent(): boolean {
+    throw new Error("Method not implemented.");
+  }
   /**
    * Status of whether aborted or not.
    *
@@ -83,7 +86,7 @@ export class Aborter implements AbortSignalLike {
    *
    * @memberof Aborter
    */
-  public onabort?: (ev?: Event) => any;
+  public onabort: ((this: AbortSignalLike, ev: Event) => any) | null = null;
 
   // tslint:disable-next-line:variable-name
   private _aborted: boolean = false;
@@ -204,11 +207,11 @@ export class Aborter implements AbortSignalLike {
     this.cancelTimer();
 
     if (this.onabort) {
-      this.onabort.call(this);
+      this.onabort.call(this, { type: "abort" } as any);
     }
 
     this.abortEventListeners.forEach((listener) => {
-      listener.call(this);
+      listener.call(this, { type: "abort" } as any);
     });
 
     this.children.forEach((child) => child.cancelByParent());
