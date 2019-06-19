@@ -1,5 +1,6 @@
-import * as assert from "assert";
 import { isNode } from "@azure/ms-rest-js";
+import * as assert from "assert";
+import * as dotenv from "dotenv";
 
 import { Aborter } from "../src/Aborter";
 import { DirectoryURL } from "../src/DirectoryURL";
@@ -7,7 +8,7 @@ import { FileURL } from "../src/FileURL";
 import { ShareURL } from "../src/ShareURL";
 import { bodyToString, getBSU, sleep } from "./utils";
 import { record } from "./utils/recorder";
-import * as dotenv from "dotenv";
+
 dotenv.config({ path: "../.env" });
 
 describe("FileURL", () => {
