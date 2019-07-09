@@ -1,5 +1,9 @@
 # Changelog
 
+2019.7 Version 10.2.0
+
+* Updated API version to 2018-11-09.
+
 2019.1 Version 10.1.0
 
 * [Breaking] Updated convenience layer methods enum type parameters into typescript union types, this will help to reduce bundle footprint.
