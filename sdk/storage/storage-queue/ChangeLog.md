@@ -1,5 +1,8 @@
 # Changelog
 
+* Updated HTTP client from axios to node-fetch in Node.js runtime.
+* A new option `keepAliveOptions` added to parameter of `StorageURL.newPipeline()` which controls keep-alive configurations. Keep-alive is enabled by default.
+
 2019.1 Version 10.1.0
 
 * [Breaking] Updated convenience layer methods enum type parameters into typescript union types, this will help to reduce bundle footprint.

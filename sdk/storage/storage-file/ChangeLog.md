@@ -1,5 +1,8 @@
 # Changelog
 
+* Updated HTTP client from axios to node-fetch in Node.js runtime.
+* A new option `keepAliveOptions` added to parameter of `StorageURL.newPipeline()` which controls keep-alive configurations. Keep-alive is enabled by default.
+
 2018.06 Version 10.2.0
 
 * Updated Azure Storage Service API version to [2018-11-09](https://docs.microsoft.com/en-us/rest/api/storageservices/version-2018-11-09).
