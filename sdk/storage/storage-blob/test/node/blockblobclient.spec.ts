@@ -1,21 +1,10 @@
+import { TokenCredential } from "@azure/core-http";
+import { record } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 
-import {
-  bodyToString,
-  getBSU,
-  getConnectionStringFromEnvironment,
-  setupEnvironment
-} from "../utils";
-import {
-  BlockBlobClient,
-  newPipeline,
-  StorageSharedKeyCredential,
-  BlobClient,
-  ContainerClient
-} from "../../src";
-import { TokenCredential } from "@azure/core-http";
+import { BlobClient, BlockBlobClient, ContainerClient, newPipeline, StorageSharedKeyCredential } from "../../src";
+import { bodyToString, getBSU, getConnectionStringFromEnvironment, setupEnvironment } from "../utils";
 import { assertClientUsesTokenCredential } from "../utils/assert";
-import { record } from "@azure/test-utils-recorder";
 
 describe("BlockBlobClient Node.js only", () => {
   setupEnvironment();

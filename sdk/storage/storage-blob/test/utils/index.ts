@@ -1,23 +1,21 @@
+import { TokenCredential } from "@azure/core-http";
 import { randomBytes } from "crypto";
 import * as dotenv from "dotenv";
 import * as fs from "fs";
 import * as path from "path";
 
-import { SimpleTokenCredential } from "./testutils.common";
-import { StorageSharedKeyCredential } from "../../src/credentials/StorageSharedKeyCredential";
-import { BlobServiceClient } from "../../src/BlobServiceClient";
-import { getUniqueName } from "./testutils.common";
-import { newPipeline } from "../../src/Pipeline";
 import {
-  generateAccountSASQueryParameters,
   AccountSASPermissions,
-  SASProtocol,
   AccountSASResourceTypes,
-  AccountSASServices
+  AccountSASServices,
+  generateAccountSASQueryParameters,
+  SASProtocol,
 } from "../../src";
+import { BlobServiceClient } from "../../src/BlobServiceClient";
+import { StorageSharedKeyCredential } from "../../src/credentials/StorageSharedKeyCredential";
+import { newPipeline } from "../../src/Pipeline";
 import { extractConnectionStringParts } from "../../src/utils/utils.common";
-import { TokenCredential } from "@azure/core-http";
-import { env } from "@azure/test-utils-recorder";
+import { getUniqueName, SimpleTokenCredential } from "./testutils.common";
 
 dotenv.config({ path: "../.env" });
 
@@ -43,21 +41,22 @@ export function getGenericCredential(accountType: string): StorageSharedKeyCrede
 }
 
 export function getGenericBSU(
-  accountType: string,
-  accountNameSuffix: string = ""
+  _accountType: string,
+  _accountNameSuffix: string = ""
 ): BlobServiceClient {
-  if (env.STORAGE_CONNECTION_STRING.startsWith("UseDevelopmentStorage=true")) {
-    return BlobServiceClient.fromConnectionString(getConnectionStringFromEnvironment());
-  } else {
-    const credential = getGenericCredential(accountType) as StorageSharedKeyCredential;
+  return BlobServiceClient.fromConnectionString(getConnectionStringFromEnvironment());
+  // if (env.STORAGE_CONNECTION_STRING.startsWith("UseDevelopmentStorage=true")) {
+  //   return BlobServiceClient.fromConnectionString(getConnectionStringFromEnvironment());
+  // } else {
+  //   const credential = getGenericCredential(accountType) as StorageSharedKeyCredential;
 
-    const pipeline = newPipeline(credential, {
-      // Enable logger when debugging
-      // logger: new ConsoleHttpPipelineLogger(HttpPipelineLogLevel.INFO)
-    });
-    const blobPrimaryURL = `https://${credential.accountName}${accountNameSuffix}.blob.core.windows.net/`;
-    return new BlobServiceClient(blobPrimaryURL, pipeline);
-  }
+  //   const pipeline = newPipeline(credential, {
+  //     // Enable logger when debugging
+  //     // logger: new ConsoleHttpPipelineLogger(HttpPipelineLogLevel.INFO)
+  //   });
+  //   const blobPrimaryURL = `https://${credential.accountName}${accountNameSuffix}.blob.core.windows.net/`;
+  //   return new BlobServiceClient(blobPrimaryURL, pipeline);
+  // }
 }
 
 export function getTokenCredential(): TokenCredential {

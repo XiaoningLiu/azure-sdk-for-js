@@ -1,14 +1,10 @@
+import { env } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 import * as dotenv from "dotenv";
-import {
-  BlobClient,
-  ContainerClient,
-  BlobServiceClient,
-  BlockBlobClient,
-  PageBlobClient
-} from "../../src";
-import { getBSU, getConnectionStringFromEnvironment, bodyToString, getUniqueName } from "../utils";
-import { env } from "@azure/test-utils-recorder";
+
+import { BlobClient, BlobServiceClient, BlockBlobClient, ContainerClient, PageBlobClient } from "../../src";
+import { bodyToString, getBSU, getConnectionStringFromEnvironment, getUniqueName } from "../utils";
+
 dotenv.config({ path: "../.env" });
 
 // Expected environment variable to run this test-suite

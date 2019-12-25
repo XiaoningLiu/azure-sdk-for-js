@@ -1,19 +1,20 @@
+import { record, Recorder } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 import * as dotenv from "dotenv";
+
+import { BlobServiceClient, BlockBlobClient, ContainerClient, newPipeline } from "../src";
+import { BlobBatch } from "../src/BlobBatch";
 import {
   getGenericBSU,
   getGenericCredential,
   getTokenCredential,
+  setupEnvironment,
   SimpleTokenCredential,
-  setupEnvironment
 } from "./utils";
-import { record, Recorder } from "@azure/test-utils-recorder";
-import { BlobBatch } from "../src/BlobBatch";
-import { ContainerClient, BlockBlobClient, BlobServiceClient, newPipeline } from "../src";
 
 dotenv.config({ path: "../.env" });
 
-describe("BlobBatch", () => {
+describe.skip("BlobBatch", () => {
   setupEnvironment();
   const blobServiceClient = getGenericBSU("");
   const blobBatchClient = blobServiceClient.getBlobBatchClient();
@@ -81,12 +82,14 @@ describe("BlobBatch", () => {
     }
 
     // Verify blobs deleted.
-    const resp2 = (await containerClient
-      .listBlobsFlat({
-        includeSnapshots: true
-      })
-      .byPage({ maxPageSize: 1 })
-      .next()).value;
+    const resp2 = (
+      await containerClient
+        .listBlobsFlat({
+          includeSnapshots: true
+        })
+        .byPage({ maxPageSize: 1 })
+        .next()
+    ).value;
     assert.equal(resp2.segment.blobItems.length, 0);
   });
 
@@ -116,12 +119,14 @@ describe("BlobBatch", () => {
     }
 
     // Verify blobs deleted.
-    const resp2 = (await containerClient
-      .listBlobsFlat({
-        includeSnapshots: true
-      })
-      .byPage({ maxPageSize: 1 })
-      .next()).value;
+    const resp2 = (
+      await containerClient
+        .listBlobsFlat({
+          includeSnapshots: true
+        })
+        .byPage({ maxPageSize: 1 })
+        .next()
+    ).value;
     assert.equal(resp2.segment.blobItems.length, 0);
   });
 
@@ -144,12 +149,14 @@ describe("BlobBatch", () => {
     });
 
     // Ensure blobs ready.
-    let respList1 = (await containerClient
-      .listBlobsFlat({
-        includeSnapshots: true
-      })
-      .byPage({ maxPageSize: 5 })
-      .next()).value;
+    let respList1 = (
+      await containerClient
+        .listBlobsFlat({
+          includeSnapshots: true
+        })
+        .byPage({ maxPageSize: 5 })
+        .next()
+    ).value;
     assert.equal(respList1.segment.blobItems.length, 2);
 
     // Submit batch request and verify response.
@@ -159,12 +166,14 @@ describe("BlobBatch", () => {
     assert.equal(respSubmitBatch1.subResponsesFailedCount, 0);
 
     // Validate that blob and its snapshot all get deleted.
-    respList1 = (await containerClient
-      .listBlobsFlat({
-        includeSnapshots: true
-      })
-      .byPage({ maxPageSize: 5 })
-      .next()).value;
+    respList1 = (
+      await containerClient
+        .listBlobsFlat({
+          includeSnapshots: true
+        })
+        .byPage({ maxPageSize: 5 })
+        .next()
+    ).value;
     assert.equal(respList1.segment.blobItems.length, 0);
 
     //
@@ -180,12 +189,14 @@ describe("BlobBatch", () => {
     await batchDeleteRequest2.deleteBlob(snapshotURL.url, credential);
 
     // Ensure blobs ready.
-    let respList2 = (await containerClient
-      .listBlobsFlat({
-        includeSnapshots: true
-      })
-      .byPage({ maxPageSize: 5 })
-      .next()).value;
+    let respList2 = (
+      await containerClient
+        .listBlobsFlat({
+          includeSnapshots: true
+        })
+        .byPage({ maxPageSize: 5 })
+        .next()
+    ).value;
     assert.equal(respList2.segment.blobItems.length, 2);
 
     // Submit batch request and verify response.
@@ -195,12 +206,14 @@ describe("BlobBatch", () => {
     assert.equal(respSubmitBatch2.subResponsesFailedCount, 0);
 
     // Validate that snapshot get deleted.
-    respList2 = (await containerClient
-      .listBlobsFlat({
-        includeSnapshots: true
-      })
-      .byPage({ maxPageSize: 5 })
-      .next()).value;
+    respList2 = (
+      await containerClient
+        .listBlobsFlat({
+          includeSnapshots: true
+        })
+        .byPage({ maxPageSize: 5 })
+        .next()
+    ).value;
     assert.equal(respList2.segment.blobItems.length, 1);
 
     //
@@ -216,12 +229,14 @@ describe("BlobBatch", () => {
     await batchDeleteRequest3.deleteBlob(snapshotURL2);
 
     // Ensure blobs ready.
-    let respList3 = (await containerClient
-      .listBlobsFlat({
-        includeSnapshots: true
-      })
-      .byPage({ maxPageSize: 5 })
-      .next()).value;
+    let respList3 = (
+      await containerClient
+        .listBlobsFlat({
+          includeSnapshots: true
+        })
+        .byPage({ maxPageSize: 5 })
+        .next()
+    ).value;
     assert.equal(respList3.segment.blobItems.length, 3);
 
     // Submit batch request and verify response.
@@ -231,12 +246,14 @@ describe("BlobBatch", () => {
     assert.equal(respSubmitBatch3.subResponsesFailedCount, 0);
 
     // Validate that snapshot get deleted.
-    respList3 = (await containerClient
-      .listBlobsFlat({
-        includeSnapshots: true
-      })
-      .byPage({ maxPageSize: 5 })
-      .next()).value;
+    respList3 = (
+      await containerClient
+        .listBlobsFlat({
+          includeSnapshots: true
+        })
+        .byPage({ maxPageSize: 5 })
+        .next()
+    ).value;
     assert.equal(respList3.segment.blobItems.length, 2);
   });
 

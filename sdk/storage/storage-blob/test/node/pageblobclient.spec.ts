@@ -1,18 +1,18 @@
+import { TokenCredential } from "@azure/core-http";
+import { delay, record } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 
-import { getBSU, getConnectionStringFromEnvironment, bodyToString, setupEnvironment } from "../utils";
 import {
+  BlobClient,
+  BlobSASPermissions,
+  ContainerClient,
+  generateBlobSASQueryParameters,
   newPipeline,
   PageBlobClient,
   StorageSharedKeyCredential,
-  ContainerClient,
-  BlobClient,
-  generateBlobSASQueryParameters,
-  BlobSASPermissions
 } from "../../src";
-import { TokenCredential } from "@azure/core-http";
+import { bodyToString, getBSU, getConnectionStringFromEnvironment, setupEnvironment } from "../utils";
 import { assertClientUsesTokenCredential } from "../utils/assert";
-import { record, delay } from "@azure/test-utils-recorder";
 import { Test_CPK_INFO } from "../utils/constants";
 
 describe("PageBlobClient Node.js only", () => {
@@ -41,7 +41,7 @@ describe("PageBlobClient Node.js only", () => {
     recorder.stop();
   });
 
-  it("startCopyIncremental", async () => {
+  it.skip("startCopyIncremental", async () => {
     await pageBlobClient.create(1024, {
       metadata: {
         sourcemeta: "val"
@@ -85,13 +85,15 @@ describe("PageBlobClient Node.js only", () => {
 
     await waitForCopy();
 
-    let listBlobResponse = (await containerClient
-      .listBlobsFlat({
-        includeCopy: true,
-        includeSnapshots: true
-      })
-      .byPage()
-      .next()).value;
+    let listBlobResponse = (
+      await containerClient
+        .listBlobsFlat({
+          includeCopy: true,
+          includeSnapshots: true
+        })
+        .byPage()
+        .next()
+    ).value;
 
     assert.equal(listBlobResponse.segment.blobItems.length, 4);
 
@@ -103,13 +105,15 @@ describe("PageBlobClient Node.js only", () => {
 
     await waitForCopy();
 
-    listBlobResponse = (await containerClient
-      .listBlobsFlat({
-        includeCopy: true,
-        includeSnapshots: true
-      })
-      .byPage()
-      .next()).value;
+    listBlobResponse = (
+      await containerClient
+        .listBlobsFlat({
+          includeCopy: true,
+          includeSnapshots: true
+        })
+        .byPage()
+        .next()
+    ).value;
 
     assert.equal(listBlobResponse.segment.blobItems.length, 6);
 
@@ -117,7 +121,7 @@ describe("PageBlobClient Node.js only", () => {
     assert.equal(pageBlobProperties.metadata!.sourcemeta, "val");
   });
 
-  it("uploadPagesFromURL", async () => {
+  it.skip("uploadPagesFromURL", async () => {
     await pageBlobClient.create(1024);
 
     const result = await blobClient.download(0);
@@ -230,7 +234,7 @@ describe("PageBlobClient Node.js only", () => {
     assert.deepStrictEqual(await bodyToString(result, 512), "\u0000".repeat(512));
   });
 
-  it("create, uploadPages, uploadPagesFromURL, download, clearPages and resize with CPK", async () => {
+  it.skip("create, uploadPages, uploadPagesFromURL, download, clearPages and resize with CPK", async () => {
     const cResp = await pageBlobClient.create(1024, {
       customerProvidedKey: Test_CPK_INFO
     });

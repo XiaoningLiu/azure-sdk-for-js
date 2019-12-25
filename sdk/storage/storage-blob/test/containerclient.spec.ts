@@ -1,16 +1,12 @@
+import { setTracer, SpanGraph, TestTracer } from "@azure/core-tracing";
+import { record, Recorder } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 import * as dotenv from "dotenv";
-import { TestTracer, setTracer, SpanGraph } from "@azure/core-tracing";
-import {
-  bodyToString,
-  getBSU,
-  getSASConnectionStringFromEnvironment,
-  isSuperSet,
-  setupEnvironment
-} from "./utils";
-import { record, Recorder } from "@azure/test-utils-recorder";
-import { ContainerClient, BlockBlobTier, ContainerListBlobHierarchySegmentResponse } from "../src";
+
+import { BlockBlobTier, ContainerClient, ContainerListBlobHierarchySegmentResponse } from "../src";
+import { bodyToString, getBSU, getSASConnectionStringFromEnvironment, isSuperSet, setupEnvironment } from "./utils";
 import { Test_CPK_INFO } from "./utils/constants";
+
 dotenv.config({ path: "../.env" });
 
 describe("ContainerClient", () => {
@@ -88,10 +84,12 @@ describe("ContainerClient", () => {
       blobClients.push(blobClient);
     }
 
-    const result = (await containerClient
-      .listBlobsFlat()
-      .byPage()
-      .next()).value;
+    const result = (
+      await containerClient
+        .listBlobsFlat()
+        .byPage()
+        .next()
+    ).value;
     assert.ok(result.serviceEndpoint.length > 0);
     assert.ok(containerClient.url.indexOf(result.containerName));
     assert.deepStrictEqual(result.continuationToken, "");
@@ -112,10 +110,12 @@ describe("ContainerClient", () => {
       blobClients.push(blobClient);
     }
 
-    const result = (await containerClient
-      .listBlobsFlat({ prefix: "" })
-      .byPage()
-      .next()).value;
+    const result = (
+      await containerClient
+        .listBlobsFlat({ prefix: "" })
+        .byPage()
+        .next()
+    ).value;
     assert.ok(result.serviceEndpoint.length > 0);
     assert.ok(containerClient.url.indexOf(result.containerName));
     assert.deepStrictEqual(result.continuationToken, "");
@@ -144,17 +144,19 @@ describe("ContainerClient", () => {
       blobClients.push(blobClient);
     }
 
-    const result = (await containerClient
-      .listBlobsFlat({
-        includeCopy: true,
-        includeDeleted: true,
-        includeMetadata: true,
-        includeSnapshots: true,
-        includeUncommitedBlobs: true,
-        prefix
-      })
-      .byPage({ maxPageSize: 1 })
-      .next()).value;
+    const result = (
+      await containerClient
+        .listBlobsFlat({
+          includeCopy: true,
+          includeDeleted: true,
+          includeMetadata: true,
+          includeSnapshots: true,
+          includeUncommitedBlobs: true,
+          prefix
+        })
+        .byPage({ maxPageSize: 1 })
+        .next()
+    ).value;
 
     assert.ok(result.serviceEndpoint.length > 0);
     assert.ok(containerClient.url.indexOf(result.containerName));
@@ -163,17 +165,19 @@ describe("ContainerClient", () => {
     assert.ok(isSuperSet(result.segment.blobItems![0].metadata, metadata));
     assert.equal(result.segment.blobItems![0].properties.accessTier, BlockBlobTier.Cool);
 
-    const result2 = (await containerClient
-      .listBlobsFlat({
-        includeCopy: true,
-        includeDeleted: true,
-        includeMetadata: true,
-        includeSnapshots: true,
-        includeUncommitedBlobs: true,
-        prefix
-      })
-      .byPage({ continuationToken: result.continuationToken, maxPageSize: 2 })
-      .next()).value;
+    const result2 = (
+      await containerClient
+        .listBlobsFlat({
+          includeCopy: true,
+          includeDeleted: true,
+          includeMetadata: true,
+          includeSnapshots: true,
+          includeUncommitedBlobs: true,
+          prefix
+        })
+        .byPage({ continuationToken: result.continuationToken, maxPageSize: 2 })
+        .next()
+    ).value;
 
     assert.ok(result2.serviceEndpoint.length > 0);
     assert.ok(containerClient.url.indexOf(result2.containerName));
@@ -187,7 +191,7 @@ describe("ContainerClient", () => {
     }
   });
 
-  it("listBlobFlat with blobs encrypted with CPK", async () => {
+  it.skip("listBlobFlat with blobs encrypted with CPK", async () => {
     const blobURLs = [];
     const prefix = "blockblob";
     const metadata = {
@@ -204,17 +208,19 @@ describe("ContainerClient", () => {
       blobURLs.push(blobClient);
     }
 
-    const result = (await containerClient
-      .listBlobsFlat({
-        includeCopy: true,
-        includeDeleted: true,
-        includeMetadata: true,
-        includeSnapshots: true,
-        includeUncommitedBlobs: true,
-        prefix
-      })
-      .byPage({ maxPageSize: 1 })
-      .next()).value;
+    const result = (
+      await containerClient
+        .listBlobsFlat({
+          includeCopy: true,
+          includeDeleted: true,
+          includeMetadata: true,
+          includeSnapshots: true,
+          includeUncommitedBlobs: true,
+          prefix
+        })
+        .byPage({ maxPageSize: 1 })
+        .next()
+    ).value;
 
     assert.ok(result.serviceEndpoint.length > 0);
     assert.ok(containerClient.url.indexOf(result.containerName));
@@ -405,10 +411,12 @@ describe("ContainerClient", () => {
     }
 
     const delimiter = "/";
-    const result = (await containerClient
-      .listBlobsByHierarchy(delimiter)
-      .byPage()
-      .next()).value;
+    const result = (
+      await containerClient
+        .listBlobsByHierarchy(delimiter)
+        .byPage()
+        .next()
+    ).value;
 
     assert.ok(result.serviceEndpoint.length > 0);
     assert.ok(containerClient.url.indexOf(result.containerName));
@@ -438,10 +446,12 @@ describe("ContainerClient", () => {
     }
 
     const delimiter = "/";
-    const result: ContainerListBlobHierarchySegmentResponse = (await containerClient
-      .listBlobsByHierarchy(delimiter, { prefix: "" })
-      .byPage()
-      .next()).value;
+    const result: ContainerListBlobHierarchySegmentResponse = (
+      await containerClient
+        .listBlobsByHierarchy(delimiter, { prefix: "" })
+        .byPage()
+        .next()
+    ).value;
 
     assert.ok(result.serviceEndpoint.length > 0);
     assert.ok(containerClient.url.indexOf(result.containerName));
@@ -478,16 +488,18 @@ describe("ContainerClient", () => {
       blobClients.push(blobClient);
     }
 
-    const result = (await containerClient
-      .listBlobsByHierarchy(delimiter, {
-        includeCopy: true,
-        includeDeleted: true,
-        includeMetadata: true,
-        includeUncommitedBlobs: true,
-        prefix
-      })
-      .byPage({ maxPageSize: 1 })
-      .next()).value;
+    const result = (
+      await containerClient
+        .listBlobsByHierarchy(delimiter, {
+          includeCopy: true,
+          includeDeleted: true,
+          includeMetadata: true,
+          includeUncommitedBlobs: true,
+          prefix
+        })
+        .byPage({ maxPageSize: 1 })
+        .next()
+    ).value;
 
     assert.ok(result.serviceEndpoint.length > 0);
     assert.ok(containerClient.url.indexOf(result.containerName));
@@ -495,16 +507,18 @@ describe("ContainerClient", () => {
     assert.deepStrictEqual(result.segment.blobItems!.length, 0);
     assert.ok(blobClients[0].url.indexOf(result.segment.blobPrefixes![0].name));
 
-    const result2 = (await containerClient
-      .listBlobsByHierarchy(delimiter, {
-        includeCopy: true,
-        includeDeleted: true,
-        includeMetadata: true,
-        includeUncommitedBlobs: true,
-        prefix
-      })
-      .byPage({ continuationToken: result.continuationToken, maxPageSize: 2 })
-      .next()).value;
+    const result2 = (
+      await containerClient
+        .listBlobsByHierarchy(delimiter, {
+          includeCopy: true,
+          includeDeleted: true,
+          includeMetadata: true,
+          includeUncommitedBlobs: true,
+          prefix
+        })
+        .byPage({ continuationToken: result.continuationToken, maxPageSize: 2 })
+        .next()
+    ).value;
 
     assert.ok(result2.serviceEndpoint.length > 0);
     assert.ok(containerClient.url.indexOf(result2.containerName));
@@ -512,16 +526,18 @@ describe("ContainerClient", () => {
     assert.deepStrictEqual(result2.segment.blobItems!.length, 0);
     assert.ok(blobClients[0].url.indexOf(result2.segment.blobPrefixes![0].name));
 
-    const result3 = (await containerClient
-      .listBlobsByHierarchy(delimiter, {
-        includeCopy: true,
-        includeDeleted: true,
-        includeMetadata: true,
-        includeUncommitedBlobs: true,
-        prefix: `${prefix}0${delimiter}`
-      })
-      .byPage({ maxPageSize: 2 })
-      .next()).value;
+    const result3 = (
+      await containerClient
+        .listBlobsByHierarchy(delimiter, {
+          includeCopy: true,
+          includeDeleted: true,
+          includeMetadata: true,
+          includeUncommitedBlobs: true,
+          prefix: `${prefix}0${delimiter}`
+        })
+        .byPage({ maxPageSize: 2 })
+        .next()
+    ).value;
 
     assert.ok(result3.serviceEndpoint.length > 0);
     assert.ok(containerClient.url.indexOf(result3.containerName));

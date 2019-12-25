@@ -1,53 +1,63 @@
+import {
+  AccountSASPermissions,
+  AccountSASResourceTypes,
+  AccountSASServices,
+  generateAccountSASQueryParameters,
+  SASProtocol,
+} from "../../src";
 import { StorageSharedKeyCredential } from "../../src/credentials/StorageSharedKeyCredential";
 import { newPipeline } from "../../src/Pipeline";
 import { QueueServiceClient } from "../../src/QueueServiceClient";
-import {
-  generateAccountSASQueryParameters,
-  AccountSASPermissions,
-  SASProtocol,
-  AccountSASResourceTypes,
-  AccountSASServices
-} from "../../src";
 import { extractConnectionStringParts } from "../../src/utils/utils.common";
-import { env } from "@azure/test-utils-recorder";
 
 // Uncomment if need to enable logger when debugging
 // import {HttpPipelineLogLevel} from "../../src"
 // import {ConsoleHttpPipelineLogger} from "./testutils.common"
 
 export function getGenericQSU(
-  accountType: string,
-  accountNameSuffix: string = ""
+  _accountType: string,
+  _accountNameSuffix: string = ""
 ): QueueServiceClient {
-  if (env.STORAGE_CONNECTION_STRING.startsWith("UseDevelopmentStorage=true")) {
-    // Expected environment variable to run tests with the emulator
-    // [Azurite - Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=Azurite.azurite)
-    // STORAGE_CONNECTION_STRING=UseDevelopmentStorage=true
-    return QueueServiceClient.fromConnectionString(getConnectionStringFromEnvironment());
-  } else {
-    const accountNameEnvVar = `${accountType}ACCOUNT_NAME`;
-    const accountKeyEnvVar = `${accountType}ACCOUNT_KEY`;
+  const credentials = new StorageSharedKeyCredential(
+    "devstoreaccount1",
+    "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
+  );
+  const pipeline = newPipeline(credentials, {
+    // Enable logger when debugging
+    // logger: new ConsoleHttpPipelineLogger(HttpPipelineLogLevel.INFO)
+  });
+  const queuePrimaryURL = `http://127.0.0.1:10001/devstoreaccount1/`;
+  return new QueueServiceClient(queuePrimaryURL, pipeline);
 
-    let accountName: string | undefined;
-    let accountKey: string | undefined;
+  // if (env.STORAGE_CONNECTION_STRING.startsWith("UseDevelopmentStorage=true")) {
+  //   // Expected environment variable to run tests with the emulator
+  //   // [Azurite - Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=Azurite.azurite)
+  //   // STORAGE_CONNECTION_STRING=UseDevelopmentStorage=true
+  //   return QueueServiceClient.fromConnectionString(getConnectionStringFromEnvironment());
+  // } else {
+  //   const accountNameEnvVar = `${accountType}ACCOUNT_NAME`;
+  //   const accountKeyEnvVar = `${accountType}ACCOUNT_KEY`;
 
-    accountName = process.env[accountNameEnvVar];
-    accountKey = process.env[accountKeyEnvVar];
+  //   let accountName: string | undefined;
+  //   let accountKey: string | undefined;
 
-    if (!accountName || !accountKey || accountName === "" || accountKey === "") {
-      throw new Error(
-        `${accountNameEnvVar} and/or ${accountKeyEnvVar} environment variables not specified.`
-      );
-    }
+  //   accountName = process.env[accountNameEnvVar];
+  //   accountKey = process.env[accountKeyEnvVar];
 
-    const credentials = new StorageSharedKeyCredential(accountName, accountKey);
-    const pipeline = newPipeline(credentials, {
-      // Enable logger when debugging
-      // logger: new ConsoleHttpPipelineLogger(HttpPipelineLogLevel.INFO)
-    });
-    const queuePrimaryURL = `https://${accountName}${accountNameSuffix}.queue.core.windows.net/`;
-    return new QueueServiceClient(queuePrimaryURL, pipeline);
-  }
+  //   if (!accountName || !accountKey || accountName === "" || accountKey === "") {
+  //     throw new Error(
+  //       `${accountNameEnvVar} and/or ${accountKeyEnvVar} environment variables not specified.`
+  //     );
+  //   }
+
+  //   const credentials = new StorageSharedKeyCredential(accountName, accountKey);
+  //   const pipeline = newPipeline(credentials, {
+  //     // Enable logger when debugging
+  //     // logger: new ConsoleHttpPipelineLogger(HttpPipelineLogLevel.INFO)
+  //   });
+  //   const queuePrimaryURL = `https://${accountName}${accountNameSuffix}.queue.core.windows.net/`;
+  //   return new QueueServiceClient(queuePrimaryURL, pipeline);
+  // }
 }
 
 export function getQSU(): QueueServiceClient {

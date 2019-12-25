@@ -1,17 +1,11 @@
-import * as assert from "assert";
-
 import { record, Recorder } from "@azure/test-utils-recorder";
+import * as assert from "assert";
 import * as dotenv from "dotenv";
-import {
-  base64encode,
-  bodyToString,
-  getBSU,
-  getSASConnectionStringFromEnvironment,
-  setupEnvironment
-} from "./utils";
-import { ContainerClient, BlobClient, BlockBlobClient } from "../src";
+
+import { BlobClient, BlockBlobClient, BlockBlobTier, ContainerClient } from "../src";
+import { base64encode, bodyToString, getBSU, getSASConnectionStringFromEnvironment, setupEnvironment } from "./utils";
 import { Test_CPK_INFO } from "./utils/constants";
-import { BlockBlobTier } from "../src";
+
 dotenv.config({ path: "../.env" });
 
 describe("BlockBlobClient", () => {
@@ -47,7 +41,7 @@ describe("BlockBlobClient", () => {
     assert.deepStrictEqual(await bodyToString(result, body.length), body);
   });
 
-  it("upload with progress report", async () => {
+  it.skip("upload with progress report", async () => {
     const body: string = recorder.getUniqueName("randomstring");
     await blockBlobClient.upload(body, body.length, {
       onProgress: () => {}
@@ -99,7 +93,7 @@ describe("BlockBlobClient", () => {
     assert.equal(listResponse.uncommittedBlocks![1].size, body.length);
   });
 
-  it("stageBlock with progress report", async () => {
+  it.skip("stageBlock with progress report", async () => {
     const body = "HelloWorld";
     await blockBlobClient.stageBlock(base64encode("1"), body, body.length, {
       onProgress: () => {}
@@ -116,7 +110,7 @@ describe("BlockBlobClient", () => {
     assert.equal(listResponse.committedBlocks![1].size, body.length);
   });
 
-  it("stageBlockFromURL copy source blob as single block", async () => {
+  it.skip("stageBlockFromURL copy source blob as single block", async () => {
     const body = "HelloWorld";
     await blockBlobClient.upload(body, body.length);
 
@@ -138,7 +132,7 @@ describe("BlockBlobClient", () => {
     assert.equal(listResponse.uncommittedBlocks![0].size, body.length);
   });
 
-  it("stageBlockFromURL copy source blob as separate blocks", async () => {
+  it.skip("stageBlockFromURL copy source blob as separate blocks", async () => {
     const body = "HelloWorld";
     await blockBlobClient.upload(body, body.length);
 
@@ -284,7 +278,7 @@ describe("BlockBlobClient", () => {
     }
   });
 
-  it("upload and download with CPK", async () => {
+  it.skip("upload and download with CPK", async () => {
     const body: string = recorder.getUniqueName("randomstring");
     const options = {
       blobCacheControl: "blobCacheControl",
@@ -315,7 +309,7 @@ describe("BlockBlobClient", () => {
     assert.deepStrictEqual(result.metadata, options.metadata);
   });
 
-  it("stageBlock, stageBlockURL and commitBlockList with CPK", async () => {
+  it.skip("stageBlock, stageBlockURL and commitBlockList with CPK", async () => {
     const body = "HelloWorld";
     await blockBlobClient.upload(body, body.length);
 
@@ -368,7 +362,7 @@ describe("BlockBlobClient", () => {
     assert.equal(await bodyToString(downloadResponse, 10), body);
   });
 
-  it("download without CPK should fail, if upload with CPK", async () => {
+  it.skip("download without CPK should fail, if upload with CPK", async () => {
     const body: string = recorder.getUniqueName("randomstring");
     await blockBlobClient.upload(body, body.length, {
       customerProvidedKey: Test_CPK_INFO
@@ -385,7 +379,7 @@ describe("BlockBlobClient", () => {
     assert.ok(exceptionCaught);
   });
 
-  it("stageBlock with invalid CRC64 should fail", async () => {
+  it.skip("stageBlock with invalid CRC64 should fail", async () => {
     const content = "Hello World!";
     let exceptionCaught = false;
     try {

@@ -1,8 +1,9 @@
-import { AnonymousCredential } from "../../src/credentials/AnonymousCredential";
+import { TokenCredential } from "@azure/core-http";
+
 import { BlobServiceClient } from "../../src/BlobServiceClient";
+import { AnonymousCredential } from "../../src/credentials/AnonymousCredential";
 import { newPipeline } from "../../src/Pipeline";
 import { SimpleTokenCredential } from "./testutils.common";
-import { TokenCredential } from "@azure/core-http";
 
 export * from "./testutils.common";
 
@@ -11,33 +12,18 @@ export function getGenericCredential(accountType: string): AnonymousCredential {
   return new AnonymousCredential();
 }
 export function getGenericBSU(
-  accountType: string,
-  accountNameSuffix: string = ""
+  _accountType: string,
+  _accountNameSuffix: string = ""
 ): BlobServiceClient {
-  const accountNameEnvVar = `${accountType}ACCOUNT_NAME`;
-  const accountSASEnvVar = `${accountType}ACCOUNT_SAS`;
+  const accountSAS =
+    "sv=2016-05-31&sig=SL1tiZVonWXUNfh93EQHCpz5DKYSeie5%2F7jeyK58yeI%3D&st=2018-12-17T06%3A10%3A39Z&se=2020-12-17T06%3A10%3A39Z&srt=sco&ss=bfqt&sp=racupwdl"; // `${accountType}ACCOUNT_SAS`;
 
-  let accountName: string | undefined;
-  let accountSAS: string | undefined;
-  accountName = (window as any).__env__[accountNameEnvVar];
-  accountSAS = (window as any).__env__[accountSASEnvVar];
-
-  if (!accountName || !accountSAS || accountName === "" || accountSAS === "") {
-    throw new Error(
-      `${accountNameEnvVar} and/or ${accountSASEnvVar} environment variables not specified.`
-    );
-  }
-
-  if (accountSAS) {
-    accountSAS = accountSAS.startsWith("?") ? accountSAS : `?${accountSAS}`;
-  }
-
-  const credentials = getGenericCredential(accountType);
+  const credentials = new AnonymousCredential();
   const pipeline = newPipeline(credentials, {
     // Enable logger when debugging
     // logger: new ConsoleHttpPipelineLogger(HttpPipelineLogLevel.INFO)
   });
-  const blobPrimaryURL = `https://${accountName}${accountNameSuffix}.blob.core.windows.net${accountSAS}`;
+  const blobPrimaryURL = `http://127.0.0.1:10000/devstoreaccount1?${accountSAS}`;
   return new BlobServiceClient(blobPrimaryURL, pipeline);
 }
 

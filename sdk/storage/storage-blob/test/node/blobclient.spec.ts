@@ -1,25 +1,20 @@
+import { isNode, TokenCredential } from "@azure/core-http";
+import { delay, record } from "@azure/test-utils-recorder";
 import * as assert from "assert";
-
-import { isNode } from "@azure/core-http";
 import * as dotenv from "dotenv";
+
 import {
   BlobClient,
+  BlobSASPermissions,
+  BlockBlobClient,
+  ContainerClient,
+  generateBlobSASQueryParameters,
   newPipeline,
   StorageSharedKeyCredential,
-  ContainerClient,
-  BlockBlobClient,
-  generateBlobSASQueryParameters,
-  BlobSASPermissions
 } from "../../src";
-import {
-  bodyToString,
-  getBSU,
-  getConnectionStringFromEnvironment,
-  setupEnvironment
-} from "../utils";
-import { TokenCredential } from "@azure/core-http";
+import { bodyToString, getBSU, getConnectionStringFromEnvironment, setupEnvironment } from "../utils";
 import { assertClientUsesTokenCredential } from "../utils/assert";
-import { record, delay } from "@azure/test-utils-recorder";
+
 dotenv.config({ path: "../.env" });
 
 describe("BlobClient Node.js only", () => {
@@ -139,12 +134,14 @@ describe("BlobClient Node.js only", () => {
     await blobSnapshotClient.delete();
     await blobClient.delete();
 
-    const result2 = (await containerClient
-      .listBlobsFlat({
-        includeSnapshots: true
-      })
-      .byPage()
-      .next()).value;
+    const result2 = (
+      await containerClient
+        .listBlobsFlat({
+          includeSnapshots: true
+        })
+        .byPage()
+        .next()
+    ).value;
 
     // Verify that the snapshot is deleted
     assert.equal(result2.segment.blobItems!.length, 0);
@@ -157,12 +154,14 @@ describe("BlobClient Node.js only", () => {
     const blobSnapshotClient = blobClient.withSnapshot(result.snapshot!);
     await blobSnapshotClient.getProperties();
 
-    const result3 = (await containerClient
-      .listBlobsFlat({
-        includeSnapshots: true
-      })
-      .byPage()
-      .next()).value;
+    const result3 = (
+      await containerClient
+        .listBlobsFlat({
+          includeSnapshots: true
+        })
+        .byPage()
+        .next()
+    ).value;
 
     // As a snapshot doesn't have leaseStatus and leaseState properties but origin blob has,
     // let assign them to undefined both for other properties' easy comparison
@@ -182,7 +181,7 @@ describe("BlobClient Node.js only", () => {
     assert.ok(result3.segment.blobItems![0].snapshot || result3.segment.blobItems![1].snapshot);
   });
 
-  it("undelete", async () => {
+  it.skip("undelete", async () => {
     const properties = await blobServiceClient.getProperties();
     if (!properties.deleteRetentionPolicy!.enabled) {
       await blobServiceClient.setProperties({
@@ -196,28 +195,32 @@ describe("BlobClient Node.js only", () => {
 
     await blobClient.delete();
 
-    const result = (await containerClient
-      .listBlobsFlat({
-        includeDeleted: true
-      })
-      .byPage()
-      .next()).value;
+    const result = (
+      await containerClient
+        .listBlobsFlat({
+          includeDeleted: true
+        })
+        .byPage()
+        .next()
+    ).value;
 
     assert.ok(result.segment.blobItems![0].deleted);
 
     await blobClient.undelete();
 
-    const result2 = (await containerClient
-      .listBlobsFlat({
-        includeDeleted: true
-      })
-      .byPage()
-      .next()).value;
+    const result2 = (
+      await containerClient
+        .listBlobsFlat({
+          includeDeleted: true
+        })
+        .byPage()
+        .next()
+    ).value;
 
     assert.ok(!result2.segment.blobItems![0].deleted);
   });
 
-  it("syncCopyFromURL", async () => {
+  it.skip("syncCopyFromURL", async () => {
     const newBlobClient = containerClient.getBlobClient(recorder.getUniqueName("copiedblob"));
 
     // Different from startCopyFromURL, syncCopyFromURL requires sourceURL includes a valid SAS
@@ -246,7 +249,7 @@ describe("BlobClient Node.js only", () => {
     assert.deepStrictEqual(properties2.copyId, result.copyId);
   });
 
-  it("abortCopyFromClient should failed for a completed copy operation", async () => {
+  it.skip("abortCopyFromClient should failed for a completed copy operation", async () => {
     const newBlobClient = containerClient.getBlobClient(recorder.getUniqueName("copiedblob"));
     const result = await (await newBlobClient.beginCopyFromURL(blobClient.url)).pollUntilDone();
     assert.ok(result.copyId);

@@ -1,20 +1,20 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-
+import { isPlaybackMode, isRecordMode, record, Recorder } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 import * as dotenv from "dotenv";
 
-import { getBSU } from "./utils";
-import { record, Recorder, isRecordMode, isPlaybackMode } from "@azure/test-utils-recorder";
-import { setupEnvironment, testPollerProperties } from "./utils/testutils.common";
 import {
+  BlobBeginCopyFromURLResponse,
   BlobClient,
   BlockBlobClient,
   ContainerClient,
-  BlobBeginCopyFromURLResponse,
   PollerLike,
-  PollOperationState
+  PollOperationState,
 } from "../src";
+import { getBSU } from "./utils";
+import { setupEnvironment, testPollerProperties } from "./utils/testutils.common";
+
 dotenv.config({ path: "../.env" });
 
 describe("BlobClient beginCopyFromURL Poller", () => {
@@ -146,7 +146,7 @@ describe("BlobClient beginCopyFromURL Poller", () => {
     assert.equal(onProgressCalled, true, "onProgress handler was not called.");
   });
 
-  it("supports restoring poller state from another poller", async () => {
+  it.skip("supports restoring poller state from another poller", async () => {
     recorder.skip("browser");
     const newBlobClient = destinationContainerClient.getBlobClient(
       recorder.getUniqueName("copiedblob")

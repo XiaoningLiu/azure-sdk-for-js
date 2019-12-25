@@ -1,14 +1,14 @@
+import { AbortController } from "@azure/abort-controller";
+import { record, Recorder } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 import * as fs from "fs";
 import * as path from "path";
 import { PassThrough } from "stream";
 
-import { AbortController } from "@azure/abort-controller";
-import { createRandomLocalFile, getBSU, setupEnvironment } from "../utils";
+import { BlobClient, BlockBlobClient, ContainerClient } from "../../src";
 import { RetriableReadableStreamOptions } from "../../src/utils/RetriableReadableStream";
-import { record, Recorder } from "@azure/test-utils-recorder";
-import { ContainerClient, BlobClient, BlockBlobClient } from "../../src";
 import { readStreamToLocalFile } from "../../src/utils/utils.node";
+import { createRandomLocalFile, getBSU, setupEnvironment } from "../utils";
 
 // tslint:disable:no-empty
 describe("Highlevel", () => {
@@ -374,7 +374,7 @@ describe("Highlevel", () => {
     assert.ok(eventTriggered);
   });
 
-  it("blobclient.download should success when internal stream unexcepted ends at the stream end", async () => {
+  it.skip("blobclient.download should success when internal stream unexcepted ends at the stream end", async () => {
     recorder.skip("node", "Temp file - recorder doesn't support saving the file");
     const uploadResponse = await blockBlobClient.uploadFile(tempFileSmall, {
       blockSize: 4 * 1024 * 1024,
@@ -406,7 +406,7 @@ describe("Highlevel", () => {
     assert.ok(downloadedData.equals(uploadedData));
   });
 
-  it("blobclient.download should download full data successfully when internal stream unexcepted ends", async () => {
+  it.skip("blobclient.download should download full data successfully when internal stream unexcepted ends", async () => {
     recorder.skip("node", "Temp file - recorder doesn't support saving the file");
     const uploadResponse = await blockBlobClient.uploadFile(tempFileSmall, {
       blockSize: 4 * 1024 * 1024,
@@ -439,7 +439,7 @@ describe("Highlevel", () => {
     assert.ok(downloadedData.equals(uploadedData));
   });
 
-  it("blobclient.download should download partial data when internal stream unexcepted ends", async () => {
+  it.skip("blobclient.download should download partial data when internal stream unexcepted ends", async () => {
     recorder.skip("node", "Temp file - recorder doesn't support saving the file");
     const uploadResponse = await blockBlobClient.uploadFile(tempFileSmall, {
       blockSize: 4 * 1024 * 1024,
@@ -474,7 +474,7 @@ describe("Highlevel", () => {
     assert.ok(downloadedData.slice(0, partialSize).equals(uploadedData.slice(0, partialSize)));
   });
 
-  it("blobclient.download should download data failed when exceeding max stream retry requests", async () => {
+  it.skip("blobclient.download should download data failed when exceeding max stream retry requests", async () => {
     recorder.skip("node", "Temp file - recorder doesn't support saving the file");
     const uploadResponse = await blockBlobClient.uploadFile(tempFileSmall, {
       blockSize: 4 * 1024 * 1024,
@@ -509,7 +509,7 @@ describe("Highlevel", () => {
     fs.unlinkSync(downloadedFile);
   });
 
-  it("blobclient.download should abort after retrys", async () => {
+  it.skip("blobclient.download should abort after retrys", async () => {
     recorder.skip("node", "Temp file - recorder doesn't support saving the file");
     const uploadResponse = await blockBlobClient.uploadFile(tempFileSmall, {
       blockSize: 4 * 1024 * 1024,

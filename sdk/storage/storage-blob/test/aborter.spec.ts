@@ -1,10 +1,11 @@
-import * as assert from "assert";
-
 import { AbortController, AbortSignal } from "@azure/abort-controller";
+import { record, Recorder } from "@azure/test-utils-recorder";
+import * as assert from "assert";
+import * as dotenv from "dotenv";
+
 import { ContainerClient } from "../src";
 import { getBSU, setupEnvironment } from "./utils";
-import { record, Recorder } from "@azure/test-utils-recorder";
-import * as dotenv from "dotenv";
+
 dotenv.config({ path: "../.env" });
 
 // tslint:disable:no-empty

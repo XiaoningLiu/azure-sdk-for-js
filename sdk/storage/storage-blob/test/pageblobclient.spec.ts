@@ -1,13 +1,10 @@
+import { record, Recorder } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 import * as dotenv from "dotenv";
-import {
-  bodyToString,
-  getBSU,
-  getSASConnectionStringFromEnvironment,
-  setupEnvironment
-} from "./utils";
-import { ContainerClient, BlobClient, PageBlobClient, PremiumPageBlobTier } from "../src";
-import { record, Recorder } from "@azure/test-utils-recorder";
+
+import { BlobClient, ContainerClient, PageBlobClient, PremiumPageBlobTier } from "../src";
+import { bodyToString, getBSU, getSASConnectionStringFromEnvironment, setupEnvironment } from "./utils";
+
 dotenv.config({ path: "../.env" });
 
 describe("PageBlobClient", () => {
@@ -107,7 +104,7 @@ describe("PageBlobClient", () => {
     assert.equal(await bodyToString(page2, 512), "b".repeat(512));
   });
 
-  it("uploadPages with progress report", async () => {
+  it.skip("uploadPages with progress report", async () => {
     await pageBlobClient.create(1024);
 
     const result = await blobClient.download(0);
@@ -157,7 +154,7 @@ describe("PageBlobClient", () => {
     assert.equal((page2.pageRange![0].count || 0) + page2.pageRange![0].offset, 1023);
   });
 
-  it("getPageRangesDiff", async () => {
+  it.skip("getPageRangesDiff", async () => {
     await pageBlobClient.create(1024);
 
     const result = await blobClient.download(0);
@@ -196,7 +193,7 @@ describe("PageBlobClient", () => {
     assert.equal(propertiesResponse.blobSequenceNumber!, 100);
   });
 
-  it("uploadPages with invalid CRC64 should fail", async () => {
+  it.skip("uploadPages with invalid CRC64 should fail", async () => {
     await pageBlobClient.create(1024);
 
     let exceptionCaught = false;

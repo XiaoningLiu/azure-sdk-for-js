@@ -1,13 +1,11 @@
+import { record, Recorder } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 import * as dotenv from "dotenv";
+
 import { HttpHeaders } from "../src";
-import {
-  sanitizeHeaders,
-  sanitizeURL,
-  extractConnectionStringParts
-} from "../src/utils/utils.common";
-import { record, Recorder } from "@azure/test-utils-recorder";
+import { extractConnectionStringParts, sanitizeHeaders, sanitizeURL } from "../src/utils/utils.common";
 import { setupEnvironment } from "./utils";
+
 dotenv.config({ path: "../.env" });
 
 describe("Utility Helpers", () => {

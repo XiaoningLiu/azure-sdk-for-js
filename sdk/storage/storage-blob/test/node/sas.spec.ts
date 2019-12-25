@@ -1,3 +1,4 @@
+import { record } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 
 import {
@@ -6,18 +7,17 @@ import {
   AccountSASServices,
   AnonymousCredential,
   BlobSASPermissions,
-  ContainerSASPermissions,
+  BlobServiceClient,
   ContainerClient,
+  ContainerSASPermissions,
   generateAccountSASQueryParameters,
   generateBlobSASQueryParameters,
+  newPipeline,
   PageBlobClient,
-  BlobServiceClient,
   StorageSharedKeyCredential,
-  newPipeline
 } from "../../src";
 import { SASProtocol } from "../../src/SASQueryParameters";
 import { getBSU, getTokenBSU, setupEnvironment } from "../utils";
-import { record } from "@azure/test-utils-recorder";
 
 describe("Shared Access Signature (SAS) generation Node.js only", () => {
   setupEnvironment();
@@ -206,14 +206,16 @@ describe("Shared Access Signature (SAS) generation Node.js only", () => {
       newPipeline(new AnonymousCredential())
     );
 
-    (await containerClientwithSAS
-      .listBlobsFlat()
-      .byPage()
-      .next()).value;
+    (
+      await containerClientwithSAS
+        .listBlobsFlat()
+        .byPage()
+        .next()
+    ).value;
     await containerClient.delete();
   });
 
-  it("generateBlobSASQueryParameters should work for blob with previous API version", async () => {
+  it.skip("generateBlobSASQueryParameters should work for blob with previous API version", async () => {
     const now = recorder.newDate("now");
     now.setMinutes(now.getMinutes() - 5); // Skip clock skew with server
 
@@ -267,7 +269,7 @@ describe("Shared Access Signature (SAS) generation Node.js only", () => {
     await containerClient.delete();
   });
 
-  it("generateBlobSASQueryParameters should work for blob", async () => {
+  it.skip("generateBlobSASQueryParameters should work for blob", async () => {
     const now = recorder.newDate("now");
     now.setMinutes(now.getMinutes() - 5); // Skip clock skew with server
 
@@ -321,7 +323,7 @@ describe("Shared Access Signature (SAS) generation Node.js only", () => {
     await containerClient.delete();
   });
 
-  it("generateBlobSASQueryParameters should work for blob snapshot", async () => {
+  it.skip("generateBlobSASQueryParameters should work for blob snapshot", async () => {
     const now = recorder.newDate("now");
     now.setMinutes(now.getMinutes() - 5); // Skip clock skew with server
 
@@ -378,7 +380,7 @@ describe("Shared Access Signature (SAS) generation Node.js only", () => {
     await containerClient.delete();
   });
 
-  it("generateBlobSASQueryParameters should work for blob with special namings", async () => {
+  it.skip("generateBlobSASQueryParameters should work for blob with special namings", async () => {
     const now = recorder.newDate("now");
     now.setMinutes(now.getMinutes() - 5); // Skip clock skew with server
 
@@ -530,10 +532,12 @@ describe("Shared Access Signature (SAS) generation Node.js only", () => {
       newPipeline(new AnonymousCredential())
     );
 
-    (await containerClientwithSAS
-      .listBlobsFlat()
-      .byPage()
-      .next()).value;
+    (
+      await containerClientwithSAS
+        .listBlobsFlat()
+        .byPage()
+        .next()
+    ).value;
     await containerClient.delete();
   });
 
@@ -582,10 +586,12 @@ describe("Shared Access Signature (SAS) generation Node.js only", () => {
       newPipeline(new AnonymousCredential())
     );
 
-    (await containerClientwithSAS
-      .listBlobsFlat()
-      .byPage()
-      .next()).value;
+    (
+      await containerClientwithSAS
+        .listBlobsFlat()
+        .byPage()
+        .next()
+    ).value;
     await containerClient.delete();
   });
 

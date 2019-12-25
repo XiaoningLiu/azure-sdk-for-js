@@ -1,15 +1,10 @@
+import { delay, record, Recorder } from "@azure/test-utils-recorder";
 import * as assert from "assert";
-
 import * as dotenv from "dotenv";
+
 import { BlobServiceClient } from "../src/BlobServiceClient";
-import {
-  getAlternateBSU,
-  getBSU,
-  getSASConnectionStringFromEnvironment,
-  getTokenBSU,
-  setupEnvironment
-} from "./utils";
-import { record, delay, Recorder } from "@azure/test-utils-recorder";
+import { getAlternateBSU, getBSU, getSASConnectionStringFromEnvironment, getTokenBSU, setupEnvironment } from "./utils";
+
 dotenv.config({ path: "../.env" });
 
 describe("BlobServiceClient", () => {
@@ -26,10 +21,12 @@ describe("BlobServiceClient", () => {
 
   it("ListContainers with default parameters", async () => {
     const blobServiceClient = getBSU();
-    const result = (await blobServiceClient
-      .listContainers()
-      .byPage()
-      .next()).value;
+    const result = (
+      await blobServiceClient
+        .listContainers()
+        .byPage()
+        .next()
+    ).value;
     assert.ok(typeof result.requestId);
     assert.ok(result.requestId!.length > 0);
     assert.ok(typeof result.version);
@@ -50,10 +47,12 @@ describe("BlobServiceClient", () => {
 
   it("ListContainers with default parameters - null prefix shouldn't throw error", async () => {
     const blobServiceClient = getBSU();
-    const result = (await blobServiceClient
-      .listContainers({ prefix: "" })
-      .byPage()
-      .next()).value;
+    const result = (
+      await blobServiceClient
+        .listContainers({ prefix: "" })
+        .byPage()
+        .next()
+    ).value;
 
     assert.ok(result.containerItems!.length >= 0);
 
@@ -76,13 +75,15 @@ describe("BlobServiceClient", () => {
     await containerClient1.create({ metadata: { key: "val" } });
     await containerClient2.create({ metadata: { key: "val" } });
 
-    const result1 = (await blobServiceClient
-      .listContainers({
-        includeMetadata: true,
-        prefix: containerNamePrefix
-      })
-      .byPage({ maxPageSize: 1 })
-      .next()).value;
+    const result1 = (
+      await blobServiceClient
+        .listContainers({
+          includeMetadata: true,
+          prefix: containerNamePrefix
+        })
+        .byPage({ maxPageSize: 1 })
+        .next()
+    ).value;
 
     assert.ok(result1.continuationToken);
     assert.equal(result1.containerItems!.length, 1);
@@ -95,13 +96,15 @@ describe("BlobServiceClient", () => {
     assert.deepEqual(result1.containerItems![0].properties.leaseStatus, "unlocked");
     assert.deepEqual(result1.containerItems![0].metadata!.key, "val");
 
-    const result2 = (await blobServiceClient
-      .listContainers({
-        includeMetadata: true,
-        prefix: containerNamePrefix
-      })
-      .byPage({ continuationToken: result1.continuationToken, maxPageSize: 1 })
-      .next()).value;
+    const result2 = (
+      await blobServiceClient
+        .listContainers({
+          includeMetadata: true,
+          prefix: containerNamePrefix
+        })
+        .byPage({ continuationToken: result1.continuationToken, maxPageSize: 1 })
+        .next()
+    ).value;
 
     assert.ok(!result2.continuationToken);
     assert.equal(result2.containerItems!.length, 1);

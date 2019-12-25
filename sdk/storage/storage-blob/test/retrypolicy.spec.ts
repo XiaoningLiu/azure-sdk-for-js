@@ -1,13 +1,13 @@
+import { AbortController } from "@azure/abort-controller";
 import { URLBuilder } from "@azure/core-http";
+import { record, Recorder } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 import * as dotenv from "dotenv";
 
-import { AbortController } from "@azure/abort-controller";
 import { ContainerClient, RestError } from "../src";
 import { newPipeline, Pipeline } from "../src/Pipeline";
 import { getBSU, setupEnvironment } from "./utils";
 import { InjectorPolicyFactory } from "./utils/InjectorPolicyFactory";
-import { record, Recorder } from "@azure/test-utils-recorder";
 
 dotenv.config({ path: "../.env" });
 

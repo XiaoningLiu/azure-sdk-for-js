@@ -1,17 +1,13 @@
-import * as assert from "assert";
-
-import {
-  bodyToString,
-  getBSU,
-  getSASConnectionStringFromEnvironment,
-  setupEnvironment
-} from "./utils";
 import { record } from "@azure/test-utils-recorder";
+import * as assert from "assert";
 import * as dotenv from "dotenv";
+
 import { AppendBlobClient, ContainerClient } from "../src";
+import { bodyToString, getBSU, getSASConnectionStringFromEnvironment, setupEnvironment } from "./utils";
+
 dotenv.config({ path: "../.env" });
 
-describe("AppendBlobClient", () => {
+describe.skip("AppendBlobClient", () => {
   setupEnvironment();
   const blobServiceClient = getBSU();
   let containerName: string;

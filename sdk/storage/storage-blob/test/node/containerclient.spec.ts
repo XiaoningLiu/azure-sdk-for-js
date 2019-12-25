@@ -1,16 +1,11 @@
+import { TokenCredential } from "@azure/core-http";
+import { record } from "@azure/test-utils-recorder";
 import * as assert from "assert";
 
+import { ContainerClient, ContainerSASPermissions, newPipeline, StorageSharedKeyCredential } from "../../src";
+import { PublicAccessType } from "../../src/generated/src/models";
 import { getBSU, getConnectionStringFromEnvironment, setupEnvironment } from "../utils";
-import { PublicAccessType } from "../../src/generated/src/models/index";
-import {
-  ContainerClient,
-  newPipeline,
-  StorageSharedKeyCredential,
-  ContainerSASPermissions
-} from "../../src";
-import { TokenCredential } from "@azure/core-http";
 import { assertClientUsesTokenCredential } from "../utils/assert";
-import { record } from "@azure/test-utils-recorder";
 
 describe("ContainerClient Node.js only", () => {
   setupEnvironment();

@@ -1,9 +1,10 @@
+import { delay, record, Recorder } from "@azure/test-utils-recorder";
 import * as assert from "assert";
-
 import * as dotenv from "dotenv";
+
+import { BlobClient, BlockBlobClient, ContainerClient } from "../src";
 import { getBSU, setupEnvironment } from "./utils";
-import { record, delay, Recorder } from "@azure/test-utils-recorder";
-import { ContainerClient, BlobClient, BlockBlobClient } from "../src";
+
 dotenv.config({ path: "../.env" });
 
 describe("LeaseClient from Container", () => {

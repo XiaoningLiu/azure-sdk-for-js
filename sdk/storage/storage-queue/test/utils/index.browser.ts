@@ -1,36 +1,22 @@
 import { AnonymousCredential } from "../../src/credentials/AnonymousCredential";
 import { newPipeline } from "../../src/Pipeline";
 import { QueueServiceClient } from "../../src/QueueServiceClient";
+
 export * from "./testutils.common";
 
 export function getGenericQSU(
-  accountType: string,
-  accountNameSuffix: string = ""
+  _accountType: string,
+  _accountNameSuffix: string = ""
 ): QueueServiceClient {
-  const accountNameEnvVar = `${accountType}ACCOUNT_NAME`;
-  const accountSASEnvVar = `${accountType}ACCOUNT_SAS`;
-
-  let accountName: string | undefined;
-  let accountSAS: string | undefined;
-  accountName = (window as any).__env__[accountNameEnvVar];
-  accountSAS = (window as any).__env__[accountSASEnvVar];
-
-  if (!accountName || !accountSAS || accountName === "" || accountSAS === "") {
-    throw new Error(
-      `${accountNameEnvVar} and/or ${accountSASEnvVar} environment variables not specified.`
-    );
-  }
-
-  if (accountSAS) {
-    accountSAS = accountSAS.startsWith("?") ? accountSAS : `?${accountSAS}`;
-  }
+  const accountSAS =
+    "sv=2016-05-31&sig=SL1tiZVonWXUNfh93EQHCpz5DKYSeie5%2F7jeyK58yeI%3D&st=2018-12-17T06%3A10%3A39Z&se=2020-12-17T06%3A10%3A39Z&srt=sco&ss=bfqt&sp=racupwdl"; // `${accountType}ACCOUNT_SAS`;
 
   const credentials = new AnonymousCredential();
   const pipeline = newPipeline(credentials, {
     // Enable logger when debugging
     // logger: new ConsoleHttpPipelineLogger(HttpPipelineLogLevel.INFO)
   });
-  const filePrimaryURL = `https://${accountName}${accountNameSuffix}.queue.core.windows.net${accountSAS}`;
+  const filePrimaryURL = `http://127.0.0.1:10001/devstoreaccount1?${accountSAS}`;
   return new QueueServiceClient(filePrimaryURL, pipeline);
 }
 
