@@ -1,14 +1,15 @@
-import * as assert from "assert";
-import { isNode, URLBuilder } from "@azure/core-http";
-import { TestTracer, setTracer, SpanGraph } from "@azure/core-tracing";
 import { AbortController } from "@azure/abort-controller";
-import { record, delay, Recorder } from "@azure/test-utils-recorder";
+import { isNode, URLBuilder } from "@azure/core-http";
+import { setTracer, SpanGraph, TestTracer } from "@azure/core-tracing";
+import { delay, record, Recorder } from "@azure/test-utils-recorder";
+import * as assert from "assert";
 import * as dotenv from "dotenv";
+
 import { ShareClient, ShareDirectoryClient, ShareFileClient } from "../src";
-import { getBSU, bodyToString, setupEnvironment } from "./utils";
-import { DirectoryCreateResponse } from "../src/generated/src/models";
 import { FileSystemAttributes } from "../src/FileSystemAttributes";
+import { DirectoryCreateResponse } from "../src/generated/src/models";
 import { truncatedISO8061Date } from "../src/utils/utils.common";
+import { bodyToString, getBSU, setupEnvironment } from "./utils";
 
 dotenv.config({ path: "../.env" });
 
@@ -327,6 +328,12 @@ describe("FileClient", () => {
     await fileClient.uploadData(isNode ? Buffer.from(content) : new Blob([content]));
     const response = await fileClient.download();
     assert.deepStrictEqual(await bodyToString(response), content);
+  });
+
+  it("uploadData with empty buffer", async () => {
+    await fileClient.uploadData(Buffer.alloc(0));
+    const response = await fileClient.download();
+    assert.deepStrictEqual(await bodyToString(response), "");
   });
 
   it("uploadRange", async () => {
