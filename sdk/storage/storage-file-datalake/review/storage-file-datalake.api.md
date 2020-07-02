@@ -56,7 +56,7 @@ export interface AccessControlChanges {
     aggregateCounters: AccessControlChangeCounters;
     batchCounters: AccessControlChangeCounters;
     batchFailures: AccessControlChangeFailure[];
-    continuation?: string;
+    continuationToken?: string;
 }
 
 // @public (undocumented)
@@ -874,8 +874,10 @@ export interface PathAccessControl {
 }
 
 // @public (undocumented)
-export interface PathAccessControlItem extends RemovePathAccessControlItem {
-    // (undocumented)
+export interface PathAccessControlItem {
+    accessControlType: AccessControlType;
+    defaultScope: boolean;
+    entityId: string;
     permissions: RolePermissions;
 }
 
@@ -891,14 +893,14 @@ export interface PathAppendDataHeaders {
 export interface PathChangeAccessControlRecursiveOptions extends CommonOptions {
     abortSignal?: AbortSignalLike;
     batchSize?: number;
-    continuation?: string;
+    continuationToken?: string;
     maxBatches?: number;
     onProgress?: (progress: AccessControlChanges) => void;
 }
 
 // @public
 export interface PathChangeAccessControlRecursiveResponse {
-    continuation?: string;
+    continuationToken?: string;
     counters: AccessControlChangeCounters;
 }
 
@@ -1466,12 +1468,9 @@ export interface RawAccessPolicy {
 
 // @public (undocumented)
 export interface RemovePathAccessControlItem {
-    // (undocumented)
     accessControlType: AccessControlType;
-    // (undocumented)
     defaultScope: boolean;
-    // (undocumented)
-    entityId: string;
+    entityId?: string;
 }
 
 export { RequestPolicy }
